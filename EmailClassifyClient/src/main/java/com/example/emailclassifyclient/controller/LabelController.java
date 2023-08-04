@@ -1,0 +1,35 @@
+package com.example.emailclassifyclient.controller;
+
+import com.example.emailclassifyclient.entity.Label;
+import com.example.emailclassifyclient.entity.User;
+import com.example.emailclassifyclient.service.LabelService;
+import jakarta.servlet.http.HttpSession;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.*;
+
+@Controller
+@RequestMapping("/labels")
+public class LabelController {
+    private final LabelService labelService;
+
+    @Autowired
+    public LabelController(LabelService labelService) {
+        this.labelService = labelService;
+    }
+
+    @GetMapping
+    String showLabels(){
+        return "labels";
+    }
+    @PostMapping("/add")
+    String addLabel(HttpSession session, @RequestParam String labelName){
+        labelService.addLabel(((User) session.getAttribute("user")).getId(), labelName);
+        return showLabels();
+    }
+    @GetMapping("/delete/{id}")
+    String deleteLabel(@PathVariable("id") int id){
+        labelService.removeLabel(id);
+        return showLabels();
+    }
+}

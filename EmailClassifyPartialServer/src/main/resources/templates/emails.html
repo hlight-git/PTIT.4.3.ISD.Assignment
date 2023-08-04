@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Mail Box</title>
+    <link th:href="@{css/main.css}" rel="stylesheet" type="text/css"/>
+    <script type="text/javascript" th:src="@{js/main.js}"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+            crossorigin="anonymous"></script>
+</head>
+<body>
+<div th:insert="header.html"></div>
+<div class="container my-2">
+
+    <h1 align="center">Email lists</h1>
+    <div>
+        <strong>Label filter:</strong>
+        <select class="form-select" aria-label="Default select example" onchange="filterHref(this.value)">
+            <option value="0" th:selected="${curLabel == 0}">All</option>
+            <option th:each="label : ${labels}"
+                    th:text="${label.name}"
+                    th:value="${label.id}"
+                    th:selected="${curLabel == label.id}"></option>
+        </select>
+        <br>
+    </div>
+    <table border="1" class="table table-striped table-responsive-md">
+        <thead>
+            <tr>
+                <th class="text-center">Subject</th>
+                <th class="text-center">Date</th>
+                <th class="text-center">Label</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="email : ${emails}">
+                <td class="text-center"><a th:href="@{'/emails/' + ${email.id}}" th:text="${email.subject}"></a></td>
+                <td class="text-center" th:text="${email.sentTime}"></td>
+                <td class="text-center" th:text="${email.label.name}"></td>
+            </tr>
+        </tbody>
+    </table>
+    <a class="btn btn-primary" th:if="${curPage > 1}" th:href="@{${curURL}(page=${curPage - 1})}">Prev</a>
+    <a class="btn btn-primary" th:href="@{${curURL}(page=${curPage + 1})}">Next</a>
+</div>
+<script>
+    function filterHref(value){
+        location = 'http://localhost:8090/emails/filter/' + value;
+    }
+</script>
+</body>
+</html>
