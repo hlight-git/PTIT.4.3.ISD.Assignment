@@ -17,21 +17,20 @@
 
     <div th:object="${email}">
         <div class="col-lg-9 col-md-8">
-            <div class="row">
-                <div class="col-lg-8">
-                    <div class="btn-toolbar" role="toolbar">
-                        <div class="btn-group mr-1">
-                            <button type="button" class="btn btn-outline-primary dropdown-toggle" data-toggle="dropdown" aria-expanded="false" th:text="*{label.name}">
-                                <i class="bi bi-tag"></i>
-                                <b class="caret"></b>
-                            </button>
-                            <div class="dropdown-menu">
-                                <a href="javaScript:void();" class="dropdown-item">Action</a>
-                                <a href="javaScript:void();" class="dropdown-item">Another action</a>
-                                <a href="javaScript:void();" class="dropdown-item">Something else here</a>
-                                <div class="dropdown-divider"></div>
-                                <a href="javaScript:void();" class="dropdown-item">Separated link</a>
-                            </div>
+            <div class="row ">
+                <div>
+                    <div class="btn-toolbar d-flex justify-content-end" role="toolbar">
+                        <div>
+                            <form id="myForm" method="post" action="/emails/update">
+                                <input id="urlBeforeSubmit" hidden name="urlBeforeSubmit">
+                                <input hidden name="emailId" th:value="*{id}">
+                                <select name="labelId" aria-label="Default select example" onchange="submitForm()">
+                                    <option th:each="lou : ${session.user.labels}"
+                                            th:text="${lou.label.name}"
+                                            th:value="${lou.label.id}"
+                                            th:selected="${email.label.id == lou.label.id}"></option>
+                                </select>
+                            </form>
                         </div>
                     </div>
                 </div>
@@ -54,5 +53,11 @@
         </div>
     </div>
 </div>
+<script>
+    function submitForm(){
+        document.getElementById('urlBeforeSubmit').value = location.href;
+        document.getElementById('myForm').closest('form').submit();
+    }
+</script>
 </body>
 </html>

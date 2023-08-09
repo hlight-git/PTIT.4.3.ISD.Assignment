@@ -32,7 +32,7 @@ public class LabelRestController {
         return labelOfUserRepository.findAllByUserId(userId);
     }
 
-    @GetMapping(value = "/add")
+    @PostMapping(value = "/add")
     Label add(@RequestParam("userId") int userId, @RequestParam("labelName") String labelName){
         Optional<Label> foundLabel = labelRepository.findByName(labelName);
         Label label;
@@ -55,7 +55,8 @@ public class LabelRestController {
     }
 
     @PostMapping(value = "/delete")
-    boolean delete(@RequestParam("id") int id){
-        return true;
+    void delete(@RequestParam int labelId, @RequestParam int userId){
+        LabelOfUser lou = labelOfUserRepository.findByUserIdAndLabelId(userId, labelId).get();
+        labelOfUserRepository.delete(lou);
     }
 }

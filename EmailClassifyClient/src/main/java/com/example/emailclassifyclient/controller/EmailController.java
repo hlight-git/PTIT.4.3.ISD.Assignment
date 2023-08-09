@@ -11,6 +11,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Date;
+import java.util.Map;
+
 @Controller
 @RequestMapping("/emails")
 public class EmailController {
@@ -45,7 +48,7 @@ public class EmailController {
     ) {
         User user = (User) session.getAttribute("user");
         if (user == null || labelId == 0) {
-            return "redirect:";
+            return "redirect:../..";
         }
         if (page == null){
             page = 1;
@@ -75,14 +78,15 @@ public class EmailController {
         Email email = new Email();
         email.setReceiver(userService.get(userId));
         email.setSender(((User) session.getAttribute("user")).getEmail());
-        email.setSentTime("Just a moment");
+        email.setSentTime(new Date().toString());
         email.setSubject(subject);
-        Label label = new Label();
-        label.setId(2);
-        label.setName("all documents");
-        email.setLabel(label);
         email.setContent(content);
         emailService.saveEmail(email);
         return "redirect:/";
+    }
+    @PostMapping("/update")
+    String changeLabel(@RequestParam String urlBeforeSubmit, @RequestParam int emailId, @RequestParam int labelId){
+        emailService.changeLabel(emailId, labelId);
+        return "redirect:" + urlBeforeSubmit;
     }
 }

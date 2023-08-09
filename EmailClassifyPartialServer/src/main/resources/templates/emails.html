@@ -2,7 +2,7 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Mail Box</title>
+    <title>Server</title>
     <link th:href="@{css/main.css}" rel="stylesheet" type="text/css"/>
     <script type="text/javascript" th:src="@{js/main.js}"></script>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
@@ -12,9 +12,9 @@
             crossorigin="anonymous"></script>
 </head>
 <body>
-<div th:insert="header.html"></div>
 <div class="container my-2">
-
+    <a class="btn btn-info float-end" href="/new">Add new</a>
+    <br>
     <h1 align="center">Email lists</h1>
     <div>
         <strong>Label filter:</strong>
@@ -26,30 +26,54 @@
                     th:selected="${curLabel == label.id}"></option>
         </select>
         <br>
+
     </div>
-    <table border="1" class="table table-striped table-responsive-md">
-        <thead>
+    <form id="myForm" method="post" action="/save">
+        <table border="1" class="table table-striped table-responsive-md">
+            <thead>
             <tr>
+                <th class="text-center">Id</th>
                 <th class="text-center">Subject</th>
-                <th class="text-center">Date</th>
                 <th class="text-center">Label</th>
+                <th class="text-center">Is sample</th>
             </tr>
-        </thead>
-        <tbody>
+            </thead>
+            <tbody>
             <tr th:each="email : ${emails}">
-                <td class="text-center"><a th:href="@{'/emails/' + ${email.id}}" th:text="${email.subject}"></a></td>
-                <td class="text-center" th:text="${email.sentTime}"></td>
-                <td class="text-center" th:text="${email.label.name}"></td>
+                <td class="text-center" th:text="${email.id}"></td>
+                <td class="text-center"><a th:href="@{'/detail/' + ${email.id}}" th:text="${email.subject}"></a></td>
+                <td class="text-center" th:text="${email.label}"></td>
+                <td class="text-center"><input th:name="${email.id}" type="checkbox" th:checked="${isSample.get(email.id)}"></td>
             </tr>
-        </tbody>
-    </table>
+            </tbody>
+        </table>
+        <button class="btn btn-success float-end">Save</button>
+    </form>
     <a class="btn btn-primary" th:if="${curPage > 1}" th:href="@{${curURL}(page=${curPage - 1})}">Prev</a>
     <a class="btn btn-primary" th:href="@{${curURL}(page=${curPage + 1})}">Next</a>
 </div>
 <script>
     function filterHref(value){
-        location = 'http://localhost:8090/emails/filter/' + value;
+        location = 'http://localhost:8080/filter/' + value;
     }
+    document.getElementById("myForm").addEventListener("submit", function(event) {
+        const checkboxes = document.querySelectorAll('input[type="checkbox"]');
+        checkboxes.forEach((checkbox) => {
+            if (!checkbox.checked) {
+                const hiddenInput = document.createElement("input");
+                hiddenInput.setAttribute("type", "hidden");
+                hiddenInput.setAttribute("name", checkbox.name);
+                hiddenInput.setAttribute("value", "off");
+                this.appendChild(hiddenInput);
+            }
+        });
+
+        const hiddenInput = document.createElement("input");
+        hiddenInput.setAttribute("type", "hidden");
+        hiddenInput.setAttribute("name", "urlBeforeSave");
+        hiddenInput.setAttribute("value", location.href);
+        document.getElementById("myForm").appendChild(hiddenInput);
+    });
 </script>
 </body>
 </html>

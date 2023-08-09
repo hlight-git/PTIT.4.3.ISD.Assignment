@@ -24,12 +24,16 @@ public class LabelController {
     }
     @PostMapping("/add")
     String addLabel(HttpSession session, @RequestParam String labelName){
-        labelService.addLabel(((User) session.getAttribute("user")).getId(), labelName);
+        User user = (User) session.getAttribute("user");
+        labelService.addLabel(user.getId(), labelName);
+        user.setLabels(labelService.getAllLabelOfUser(user));
+        session.setAttribute("user", user);
         return showLabels();
     }
     @GetMapping("/delete/{id}")
-    String deleteLabel(@PathVariable("id") int id){
-        labelService.removeLabel(id);
+    String deleteLabel(@SessionAttribute User user, @PathVariable("id") int id){
+        labelService.removeLabel(id, user.getId());
+        user.setLabels(labelService.getAllLabelOfUser(user));
         return showLabels();
     }
 }

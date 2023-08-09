@@ -15,10 +15,10 @@ public class LabelService extends ABSService{
         LabelOfUser[] response = rest.getForObject(Constant.API_URL + "/label?userId=" + user.getId(), LabelOfUser[].class);
         return response == null ? null : Arrays.stream(response).toList();
     }
-    public Label addLabel(int userId, String labelName){
-        return rest.getForObject(Constant.API_URL + "/label/add?userId=" + userId + "&labelName=" + labelName, Label.class);
+    public void addLabel(int userId, String labelName){
+        rest.postForLocation(Constant.API_URL + "/label/add?userId=" + userId + "&labelName=" + labelName, null);
     }
-    public void removeLabel(int id){
-        rest.getForObject(Constant.API_URL + "/label/delete?id=" + id, Boolean.class);
+    public void removeLabel(int labelId, int userId){
+        rest.postForLocation(Constant.API_URL + "/label/delete?labelId=" + labelId + "&userId=" + userId, null);
     }
 }

@@ -12,27 +12,17 @@
             crossorigin="anonymous"></script>
 </head>
 <body>
-<div th:insert="header.html"></div>
 <div class="container my-2">
-
+    <a href="http://localhost:8080" class="btn btn-primary">Back</a>
     <div th:object="${email}">
         <div class="col-lg-9 col-md-8">
             <div class="row">
-                <div class="col-lg-8">
-                    <div class="btn-toolbar" role="toolbar">
-                        <div class="btn-group mr-1">
-                            <button type="button" class="btn btn-outline-primary dropdown-toggle" data-toggle="dropdown" aria-expanded="false" th:text="*{label.name}">
-                                <i class="bi bi-tag"></i>
-                                <b class="caret"></b>
-                            </button>
-                            <div class="dropdown-menu">
-                                <a href="javaScript:void();" class="dropdown-item">Action</a>
-                                <a href="javaScript:void();" class="dropdown-item">Another action</a>
-                                <a href="javaScript:void();" class="dropdown-item">Something else here</a>
-                                <div class="dropdown-divider"></div>
-                                <a href="javaScript:void();" class="dropdown-item">Separated link</a>
-                            </div>
-                        </div>
+                <div>
+                    <div class="btn-toolbar d-flex justify-content-end" role="toolbar">
+                        <form id="myForm" method="post" action="/save">
+                            <strong>Is sample: </strong>
+                            <input th:name="${email.id}" type="checkbox" onchange="save()" th:checked="${isSample}">
+                        </form>
                     </div>
                 </div>
             </div> <!-- End row -->
@@ -54,5 +44,27 @@
         </div>
     </div>
 </div>
+<script>
+    function save(){
+        const myForm = document.getElementById("myForm");
+        const checkboxes = document.querySelectorAll('input[type="checkbox"]');
+        checkboxes.forEach((checkbox) => {
+            if (!checkbox.checked) {
+                const hiddenInput = document.createElement("input");
+                hiddenInput.setAttribute("type", "hidden");
+                hiddenInput.setAttribute("name", checkbox.name);
+                hiddenInput.setAttribute("value", "off");
+                myForm.appendChild(hiddenInput);
+            }
+        });
+
+        const hiddenInput = document.createElement("input");
+        hiddenInput.setAttribute("type", "hidden");
+        hiddenInput.setAttribute("name", "urlBeforeSave");
+        hiddenInput.setAttribute("value", location.href);
+        myForm.appendChild(hiddenInput);
+        myForm.closest('form').submit();
+    }
+</script>
 </body>
 </html>

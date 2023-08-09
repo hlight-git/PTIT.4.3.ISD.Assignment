@@ -15,8 +15,7 @@ public class EmailService extends ABSService{
     }
 
     public List<Email> getEmails(int userId, int page, int labelId){
-        String url = Constant.API_URL + "/email?receiverId=" + userId + "&page=" + page + "&labelId=" + labelId;
-        System.out.println(url);
+        String url = Constant.API_URL + "/email?receiverId=" + userId + "&labelId=" + labelId + "&page=" + page;
         Email[] response = rest.getForObject(url, Email[].class);
         return response == null ? null : Arrays.stream(response).toList();
     }
@@ -27,5 +26,8 @@ public class EmailService extends ABSService{
 
     public void saveEmail(Email email){
         rest.postForLocation(Constant.API_URL + "/email/save", email);
+    }
+    public void changeLabel(int emailId, int labelId){
+        rest.postForLocation(Constant.API_URL + "/email/update?emailId=" + emailId + "&labelId=" + labelId, null);
     }
 }
